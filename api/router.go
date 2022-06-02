@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"rest-api/internal/auth"
 	"rest-api/internal/product"
+	"rest-api/middleware"
 	"rest-api/util"
 
 	"github.com/labstack/echo/v4"
@@ -12,13 +13,15 @@ import (
 type Routes struct {
 	Router         *echo.Echo
 	authHandler    *auth.Handler
+	authMiddleware middleware.AuthMiddleware
 	productHandler *product.Handler
 }
 
-func NewRoutes(router *echo.Echo, authHandler *auth.Handler, productHandler *product.Handler) *Routes {
+func NewRoutes(router *echo.Echo, authHandler *auth.Handler, authMiddleware middleware.AuthMiddleware, productHandler *product.Handler) *Routes {
 	return &Routes{
 		Router:         router,
 		authHandler:    authHandler,
+		authMiddleware: authMiddleware,
 		productHandler: productHandler,
 	}
 }
@@ -31,7 +34,7 @@ func (r *Routes) Init() {
 		v1.POST("/login", r.authHandler.Login)
 		v1.POST("/register", r.authHandler.Register)
 
-		productRoutes := v1.Group("/products")
+		productRoutes := v1.Group("/products", r.authMiddleware.AuthMiddleware())
 		{
 			productRoutes.GET("/", r.productHandler.GetAllProducts)
 		}
