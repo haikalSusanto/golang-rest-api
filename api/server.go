@@ -2,6 +2,7 @@ package api
 
 import (
 	"net/http"
+	"rest-api/database/mysql"
 
 	"github.com/labstack/echo/v4"
 	"github.com/sirupsen/logrus"
@@ -18,6 +19,8 @@ func NewServer(router *echo.Echo) *Server {
 }
 
 func (s *Server) Init() {
+	_ = mysql.Init()
+
 	r := NewRoutes(s.Router)
 	r.Init()
 }

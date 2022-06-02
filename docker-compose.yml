@@ -4,6 +4,11 @@ services:
   golang-rest-docker:
     container_name: golang-rest-docker
     image: golang-rest-docker
+    environment:
+      DB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-sample_root_pass}
+      DB_NAME: ${DB_NAME:-sample_db}
+      DB_USER: ${DB_USER:-sample_user}
+      DB_PASSWORD: ${DB_PASSWORD:-sample_pass}
     ports:
       - "8080:8080"
     depends_on:
@@ -16,12 +21,14 @@ services:
     container_name: mysql
     image: mysql
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-sample_root_pass}
+      MYSQL_USER: ${DB_USER:-sample_user}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-sample_pass}
       MYSQL_DATABASE: ${DB_NAME:-sample_db}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-sample_root_pass}
     volumes:
       - mysql-db:/var/lib/mysql
     ports:
-      - "3307:3306"
+      - "3306:3306"
     networks:
       - main_network
     restart: unless-stopped
