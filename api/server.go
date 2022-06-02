@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"rest-api/database/mysql"
 	"rest-api/internal/auth"
+	"rest-api/internal/product"
 
 	"github.com/labstack/echo/v4"
 	"github.com/sirupsen/logrus"
@@ -23,6 +24,10 @@ var (
 	authRepo    auth.Repo
 	authService auth.Service
 	authHandler *auth.Handler
+
+	productRepo    product.Repo
+	productService product.Service
+	productHandler *product.Handler
 )
 
 func (s *Server) Init() {
@@ -33,7 +38,11 @@ func (s *Server) Init() {
 	authService = auth.NewService(authRepo)
 	authHandler = auth.NewHandler(authService)
 
-	r := NewRoutes(s.Router, authHandler)
+	productRepo = product.NewRepo(db)
+	productService = product.NewService(productRepo)
+	productHandler = product.NewHandler(productService)
+
+	r := NewRoutes(s.Router, authHandler, productHandler)
 	r.Init()
 }
 
