@@ -2,7 +2,7 @@ package api
 
 import (
 	"net/http"
-	"rest-api/database/mysql"
+	"rest-api/database/postgres"
 	"rest-api/internal/auth"
 	"rest-api/internal/product"
 	"rest-api/middleware"
@@ -33,7 +33,7 @@ var (
 )
 
 func (s *Server) Init() {
-	db := mysql.Init()
+	db := postgres.Init()
 
 	// Auth Modul
 	authRepo = auth.NewRepo(db)

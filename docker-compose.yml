@@ -11,35 +11,25 @@ services:
       DB_PASSWORD: ${DB_PASSWORD:-sample_pass}
     ports:
       - "8080:8080"
-    depends_on: 
-       mysql:
-        condition: service_healthy
-    networks:
-      - main_network
+    depends_on:
+      - postgres
+    links:
+      - postgres
     restart: unless-stopped
 
-  mysql:
-    container_name: mysql
-    image: mysql
+  postgres:
+    container_name: postgres
+    image: postgres
     environment:
-      MYSQL_USER: ${DB_USER:-sample_user}
-      MYSQL_PASSWORD: ${DB_PASSWORD:-sample_pass}
-      MYSQL_DATABASE: ${DB_NAME:-sample_db}
-      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-sample_root_pass}
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-root}
+      POSTGRES_DB: ${DB_NAME:-sample_db}
+      PGDATA: /data/postgres
     volumes:
-      - mysql-db:/var/lib/mysql
+      - postgres:/data/postgres
     ports:
-      - "3306:3306"
-    networks:
-      - main_network
+      - "5433:5432"
     restart: unless-stopped
-    healthcheck:
-      test: mysqladmin ping -h 127.0.0.1 -u root --password=${DB_ROOT_PASSWORD}
-
-networks:
-  main_network:
-    name: main_network
-    driver: bridge
 
 volumes:
-  mysql-db:  
+  postgres: 
