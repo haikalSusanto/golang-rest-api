@@ -11,8 +11,8 @@ services:
       DB_PASSWORD: ${DB_PASSWORD:-sample_pass}
     ports:
       - "8080:8080"
-    depends_on:
-      - "mysql"
+    depends_on: 
+      - mysql
     networks:
       - main_network
     restart: unless-stopped
