@@ -12,7 +12,8 @@ services:
     ports:
       - "8080:8080"
     depends_on: 
-      - mysql
+       mysql:
+        condition: service_healthy
     networks:
       - main_network
     restart: unless-stopped
@@ -32,6 +33,8 @@ services:
     networks:
       - main_network
     restart: unless-stopped
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 -u root --password=${DB_ROOT_PASSWORD}
 
 networks:
   main_network:
