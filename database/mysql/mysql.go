@@ -11,15 +11,14 @@ import (
 
 func Init() *gorm.DB {
 	dsn := fmt.Sprintf("root:%s@tcp(mysql:3306)/%s?charset=utf8mb4&parseTime=True&loc=Local", os.Getenv("DB_ROOT_PASSWORD"), os.Getenv("DB_NAME"))
-	logrus.Info(dsn)
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		logrus.Error(err)
-		panic("failed to connect database")
+		return nil
 	}
 
-	db.AutoMigrate(&User{})
+	db.AutoMigrate(&User{}, &Product{}, &Cart{}, &Transaction{}, &CartItem{})
 
-	logrus.Info("PostgreSQL Connected Successfully")
+	logrus.Info("MySQL Connected Successfully")
 	return db
 }
