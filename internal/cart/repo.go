@@ -38,7 +38,7 @@ func (r *repo) GetUserWithUsername(username string) (int, error) {
 
 func (r *repo) GetUserOngoingCart(user_id int) (*OngoingCart, error) {
 	var cart OngoingCart
-	err := r.db.Table("carts").First(&cart, "user_id = ? and status = ?", user_id, 1).Error
+	err := r.db.Table("carts").First(&cart, "user_id = ? and status = ? AND deleted_at IS NULL", user_id, 1).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, nil
@@ -61,7 +61,7 @@ func (r *repo) CreateNewCart(user_id int) (*OngoingCart, error) {
 	}
 
 	var cart OngoingCart
-	err = r.db.Table("carts").First(&cart, "user_id = ? and status = ?", user_id, 1).Error
+	err = r.db.Table("carts").First(&cart, "user_id = ? and status = ? AND deleted_at IS NULL", user_id, 1).Error
 	if err != nil {
 		return nil, errors.Wrap(ErrInternalServer, err.Error())
 	}
@@ -84,12 +84,12 @@ func (r *repo) AddItemToCart(cart_id int, product_id int, quantity int) (*CartIt
 
 func (r *repo) UpdateItemQuantity(cart_id int, product_id int, quantity int) (*CartItem, error) {
 	var cartItem CartItem
-	err := r.db.Table("cart_items").First(&cartItem, "cart_id = ? and product_id = ?", cart_id, product_id).Update("quantity", quantity).Error
+	err := r.db.Table("cart_items").First(&cartItem, "cart_id = ? and product_id = ? AND deleted_at IS NULL", cart_id, product_id).Update("quantity", quantity).Error
 	if err != nil {
 		return nil, errors.Wrap(ErrInternalServer, err.Error())
 	}
 
-	err = r.db.Table("cart_items").First(&cartItem, "cart_id = ? and product_id = ?", cart_id, product_id).Error
+	err = r.db.Table("cart_items").First(&cartItem, "cart_id = ? and product_id = ? AND deleted_at IS NULL", cart_id, product_id).Error
 	if err != nil {
 		return nil, errors.Wrap(ErrInternalServer, err.Error())
 	}
@@ -99,7 +99,7 @@ func (r *repo) UpdateItemQuantity(cart_id int, product_id int, quantity int) (*C
 
 func (r *repo) CheckCartItem(cart_id int, product_id int) (*CartItem, error) {
 	var cartItem CartItem
-	err := r.db.Table("cart_items").First(&cartItem, "cart_id = ? and product_id = ?", cart_id, product_id).Error
+	err := r.db.Table("cart_items").First(&cartItem, "cart_id = ? and product_id = ? AND deleted_at IS NULL", cart_id, product_id).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, nil
