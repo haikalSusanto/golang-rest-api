@@ -16,6 +16,7 @@ type Repo interface {
 	AddItemToCart(cart_id int, product_id int, quantity int) (*CartItem, error)
 	UpdateItemQuantity(cart_id int, product_id int, quantity int) (*CartItem, error)
 	CheckCartItem(cart_id int, product_id int) (*CartItem, error)
+	GetAllCartItems(cart_id int) (*ListCartItem, error)
 }
 
 func NewRepo(db *gorm.DB) Repo {
@@ -105,4 +106,14 @@ func (r *repo) CheckCartItem(cart_id int, product_id int) (*CartItem, error) {
 		return nil, errors.Wrap(ErrInternalServer, err.Error())
 	}
 	return &cartItem, nil
+}
+
+func (r *repo) GetAllCartItems(cart_id int) (*ListCartItem, error) {
+	var listCartItem ListCartItem
+	err := r.db.Table("cart_items").Find(&listCartItem.CartItems, "cart_id = ?", cart_id).Error
+	if err != nil {
+		return nil, errors.Wrap(ErrInternalServer, err.Error())
+	}
+
+	return &listCartItem, nil
 }

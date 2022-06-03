@@ -17,6 +17,7 @@ func NewService(repo Repo) Service {
 type Service interface {
 	GetOngoingCart(username string) (*OngoingCart, error)
 	AddItemToCart(cart_id int, product_id int, quantity int) (*CartItem, error)
+	GetAllCartItems(cart_id int) (*ListCartItem, error)
 }
 
 func (s *service) GetOngoingCart(username string) (*OngoingCart, error) {
@@ -63,4 +64,12 @@ func (s *service) AddItemToCart(cart_id int, product_id int, quantity int) (*Car
 	}
 
 	return cartItem, nil
+}
+
+func (s *service) GetAllCartItems(cart_id int) (*ListCartItem, error) {
+	listCartItem, err := s.repo.GetAllCartItems(cart_id)
+	if err != nil {
+		return nil, errors.Wrap(ErrInternalServer, err.Error())
+	}
+	return listCartItem, nil
 }

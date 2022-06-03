@@ -31,9 +31,13 @@ type OngoingCart struct {
 	Status string
 }
 
-// type CartItem struct {
-// 	ID         int
-// 	Cart_id    int
-// 	Product_id int
-// 	Quantity   int
-// }
+type CartItemDetail struct {
+	ID         int
+	Cart_id    int
+	Product_id int
+	Quantity   int
+}
+
+type ListCartItem struct {
+	CartItems []CartItemDetail
+}

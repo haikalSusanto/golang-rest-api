@@ -44,6 +44,7 @@ func (r *Routes) Init() {
 
 		cartRoutes := v1.Group("/cart", r.authMiddleware.AuthMiddleware())
 		{
+			cartRoutes.GET("/", r.cartHandler.GetAllCartItems)
 			cartRoutes.POST("/add", r.cartHandler.AddItemToCart)
 		}
 

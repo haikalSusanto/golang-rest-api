@@ -42,3 +42,23 @@ func (h *Handler) AddItemToCart(c echo.Context) error {
 		Data:    cartItem,
 	})
 }
+
+func (h *Handler) GetAllCartItems(c echo.Context) error {
+	username := middleware.ParseUserData(c)
+
+	onGoingCart, err := h.service.GetOngoingCart(username)
+	if err != nil {
+		return util.ErrorWrapWithContext(c, http.StatusInternalServerError, err)
+	}
+
+	listCartItem, err := h.service.GetAllCartItems(onGoingCart.ID)
+	if err != nil {
+		return util.ErrorWrapWithContext(c, http.StatusInternalServerError, err)
+	}
+
+	return c.JSON(http.StatusOK, util.APIResponse{
+		Status:  http.StatusOK,
+		Message: "success",
+		Data:    listCartItem.CartItems,
+	})
+}
