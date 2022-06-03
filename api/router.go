@@ -3,6 +3,7 @@ package api
 import (
 	"net/http"
 	"rest-api/internal/auth"
+	"rest-api/internal/cart"
 	"rest-api/internal/product"
 	"rest-api/middleware"
 	"rest-api/util"
@@ -15,14 +16,16 @@ type Routes struct {
 	authHandler    *auth.Handler
 	authMiddleware middleware.AuthMiddleware
 	productHandler *product.Handler
+	cartHandler    *cart.Handler
 }
 
-func NewRoutes(router *echo.Echo, authHandler *auth.Handler, authMiddleware middleware.AuthMiddleware, productHandler *product.Handler) *Routes {
+func NewRoutes(router *echo.Echo, authHandler *auth.Handler, authMiddleware middleware.AuthMiddleware, productHandler *product.Handler, cartHandler *cart.Handler) *Routes {
 	return &Routes{
 		Router:         router,
 		authHandler:    authHandler,
 		authMiddleware: authMiddleware,
 		productHandler: productHandler,
+		cartHandler:    cartHandler,
 	}
 }
 
@@ -38,6 +41,12 @@ func (r *Routes) Init() {
 		{
 			productRoutes.GET("/", r.productHandler.GetAllProducts)
 		}
+
+		cartRoutes := v1.Group("/cart", r.authMiddleware.AuthMiddleware())
+		{
+			cartRoutes.POST("/add", r.cartHandler.AddItemToCart)
+		}
+
 	}
 }
 

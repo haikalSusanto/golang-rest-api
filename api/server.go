@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"rest-api/database/postgres"
 	"rest-api/internal/auth"
+	"rest-api/internal/cart"
 	"rest-api/internal/product"
 	"rest-api/middleware"
 
@@ -30,6 +31,10 @@ var (
 	productRepo    product.Repo
 	productService product.Service
 	productHandler *product.Handler
+
+	cartRepo    cart.Repo
+	cartService cart.Service
+	cartHandler *cart.Handler
 )
 
 func (s *Server) Init() {
@@ -46,7 +51,11 @@ func (s *Server) Init() {
 	productService = product.NewService(productRepo)
 	productHandler = product.NewHandler(productService)
 
-	r := NewRoutes(s.Router, authHandler, authMiddleware, productHandler)
+	cartRepo = cart.NewRepo(db)
+	cartService = cart.NewService(cartRepo)
+	cartHandler = cart.NewHandler(cartService)
+
+	r := NewRoutes(s.Router, authHandler, authMiddleware, productHandler, cartHandler)
 	r.Init()
 }
 

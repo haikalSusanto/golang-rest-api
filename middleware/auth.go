@@ -88,3 +88,8 @@ func (a AuthMiddleware) AuthMiddleware() echo.MiddlewareFunc {
 		}
 	}
 }
+
+func ParseUserData(ctx echo.Context) string {
+	userDatabase := ctx.Get("userDatabase").(*auth.User)
+	return userDatabase.Username
+}

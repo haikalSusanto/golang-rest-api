@@ -15,7 +15,7 @@ type Cart struct {
 	gorm.Model
 	User_id     int
 	Status      int
-	total_price float64
+	Total_price float64
 }
 
 type CartItem struct {
