@@ -1,8 +1,8 @@
-# Get All Products
+# Get Products by category
 
-Show all Products that available in database.
+Show all products by category that available in system.
 
-**URL** : `/api/v1/products/`
+**URL** : `/api/v1/products/?category=`
 
 **Method** : `GET`
 
@@ -10,11 +10,18 @@ Show all Products that available in database.
 
 **Permissions required** : None
 
+**Parameters**: 
+```
+{
+    name:category
+    type:string 
+}
+```
 **Data constraints** : `{}`
 
 ## Success Responses
 
-**Condition** : User can see products
+**Condition** : User can see products by category
 
 **Code** : `200 OK`
 
@@ -37,12 +44,6 @@ Show all Products that available in database.
                 "Name": "bola basket",
                 "Category": "olahraga",
                 "Price": 200000
-            },
-            {
-                "ID": 3,
-                "Name": "panci",
-                "Category": "dapur",
-                "Price": 500000
             }
         ]
     }
