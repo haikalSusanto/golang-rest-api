@@ -14,5 +14,9 @@ func main() {
 	s := api.NewServer(router)
 	s.Init()
 
-	s.RunServer(fmt.Sprintf("%s", os.Getenv("PORT")))
+	if os.Getenv("ENV") == "production" {
+		s.RunServer(fmt.Sprintf("%s", os.Getenv("PORT")))
+	} else {
+		s.RunServer("8080")
+	}
 }

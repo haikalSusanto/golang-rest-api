@@ -18,7 +18,17 @@ func NewHandler(service Service) *Handler {
 }
 
 func (h *Handler) GetAllProducts(c echo.Context) error {
-	listProducts, err := h.service.GetAllProducts()
+	var listProducts *ListProduct
+	var err error
+
+	category := c.QueryParam("category")
+
+	if category != "" {
+		listProducts, err = h.service.GetProductsByCategory(category)
+	} else {
+		listProducts, err = h.service.GetAllProducts()
+	}
+
 	if err != nil {
 		return util.ErrorWrapWithContext(c, http.StatusInternalServerError, err)
 	}
@@ -26,6 +36,6 @@ func (h *Handler) GetAllProducts(c echo.Context) error {
 	return c.JSON(http.StatusOK, util.APIResponse{
 		Status:  http.StatusOK,
 		Message: "success",
-		Data:    listProducts,
+		Data:    listProducts.Products,
 	})
 }
