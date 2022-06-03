@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+	"os"
 	"rest-api/api"
 
 	"github.com/labstack/echo/v4"
@@ -12,5 +14,5 @@ func main() {
 	s := api.NewServer(router)
 	s.Init()
 
-	s.RunServer("8080")
+	s.RunServer(fmt.Sprintf("%s", os.Getenv("PORT")))
 }
