@@ -18,6 +18,7 @@ type Service interface {
 	GetOngoingCart(username string) (*OngoingCart, error)
 	AddItemToCart(cart_id int, product_id int, quantity int) (*CartItem, error)
 	GetAllCartItems(cart_id int) (*ListCartItem, error)
+	RemoveCartItem(cart_id int, product_id int) (*CartItem, error)
 }
 
 func (s *service) GetOngoingCart(username string) (*OngoingCart, error) {
@@ -72,4 +73,12 @@ func (s *service) GetAllCartItems(cart_id int) (*ListCartItem, error) {
 		return nil, errors.Wrap(ErrInternalServer, err.Error())
 	}
 	return listCartItem, nil
+}
+
+func (s *service) RemoveCartItem(cart_id int, product_id int) (*CartItem, error) {
+	cartItemDeleted, err := s.repo.RemoveCartItem(cart_id, product_id)
+	if err != nil {
+		return nil, errors.Wrap(ErrInternalServer, err.Error())
+	}
+	return cartItemDeleted, nil
 }

@@ -17,6 +17,7 @@ type Repo interface {
 	UpdateItemQuantity(cart_id int, product_id int, quantity int) (*CartItem, error)
 	CheckCartItem(cart_id int, product_id int) (*CartItem, error)
 	GetAllCartItems(cart_id int) (*ListCartItem, error)
+	RemoveCartItem(cart_id int, product_id int) (*CartItem, error)
 }
 
 func NewRepo(db *gorm.DB) Repo {
@@ -110,10 +111,23 @@ func (r *repo) CheckCartItem(cart_id int, product_id int) (*CartItem, error) {
 
 func (r *repo) GetAllCartItems(cart_id int) (*ListCartItem, error) {
 	var listCartItem ListCartItem
-	err := r.db.Table("cart_items").Find(&listCartItem.CartItems, "cart_id = ?", cart_id).Error
+	err := r.db.Table("cart_items").Find(&listCartItem.CartItems, "cart_id = ? AND deleted_at IS NULL", cart_id).Error
 	if err != nil {
 		return nil, errors.Wrap(ErrInternalServer, err.Error())
 	}
 
 	return &listCartItem, nil
+}
+
+func (r *repo) RemoveCartItem(cart_id int, product_id int) (*CartItem, error) {
+	cartItem := CartItem{
+		Cart_id:    cart_id,
+		Product_id: product_id,
+	}
+	err := r.db.Table("cart_items").Where("cart_id = ? AND product_id = ?", cart_id, product_id).Delete(&CartItem{}).Error
+	if err != nil {
+		return nil, errors.Wrap(ErrInternalServer, err.Error())
+	}
+
+	return &cartItem, nil
 }

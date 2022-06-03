@@ -62,3 +62,28 @@ func (h *Handler) GetAllCartItems(c echo.Context) error {
 		Data:    listCartItem.CartItems,
 	})
 }
+
+func (h *Handler) DeleteCartItem(c echo.Context) error {
+	username := middleware.ParseUserData(c)
+
+	var req RemoveItemRequest
+	if err := c.Bind(&req); err != nil {
+		return util.ErrorWrapWithContext(c, http.StatusInternalServerError, ErrInternalServer, err.Error())
+	}
+
+	onGoingCart, err := h.service.GetOngoingCart(username)
+	if err != nil {
+		return util.ErrorWrapWithContext(c, http.StatusInternalServerError, err)
+	}
+
+	cartItemDeteted, err := h.service.RemoveCartItem(onGoingCart.ID, req.ProductID)
+	if err != nil {
+		return util.ErrorWrapWithContext(c, http.StatusInternalServerError, err)
+	}
+
+	return c.JSON(http.StatusOK, util.APIResponse{
+		Status:  http.StatusOK,
+		Message: "success deleted",
+		Data:    cartItemDeteted,
+	})
+}

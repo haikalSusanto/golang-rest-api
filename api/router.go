@@ -46,6 +46,7 @@ func (r *Routes) Init() {
 		{
 			cartRoutes.GET("/", r.cartHandler.GetAllCartItems)
 			cartRoutes.POST("/add", r.cartHandler.AddItemToCart)
+			cartRoutes.DELETE("/delete", r.cartHandler.DeleteCartItem)
 		}
 
 	}

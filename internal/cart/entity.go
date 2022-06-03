@@ -7,6 +7,10 @@ type AddItemRequest struct {
 	Quantity  int `json:"quantity"`
 }
 
+type RemoveItemRequest struct {
+	ProductID int `json:"product_id"`
+}
+
 type Cart struct {
 	gorm.Model
 	User_id     int
